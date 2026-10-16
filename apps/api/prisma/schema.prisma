@@ -1,0 +1,78 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Incident {
+  id          String         @id @default(cuid())
+  externalId  String
+  source      String
+  type        IncidentType
+  title       String
+  description String         @db.Text
+  latitude    Float
+  longitude   Float
+  severity    Severity
+  magnitude   Float?
+  confidence  Float?
+  status      IncidentStatus @default(ACTIVE)
+  occurredAt  DateTime
+  sourceUrl   String?
+  metadata    Json
+  lastSeenAt  DateTime       @default(now())
+  resolvedAt  DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @default(now())
+
+  @@unique([source, externalId])
+  @@index([occurredAt])
+  @@index([severity])
+  @@index([type])
+  @@index([source])
+  @@index([status, occurredAt])
+  @@index([type, status])
+  @@index([severity, status])
+  @@index([latitude, longitude])
+  @@index([lastSeenAt])
+  @@index([source, status])
+
+  revisions IncidentRevision[]
+}
+
+model IncidentRevision {
+  id         String   @id @default(cuid())
+  incidentId String
+  incident   Incident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  recordedAt DateTime
+  summary    String
+  field      String
+  previous   String?
+  next       String?
+
+  @@index([incidentId, recordedAt])
+}
+
+enum IncidentType {
+  EARTHQUAKE
+  WILDFIRE
+  STORM
+  FLOOD
+  OTHER
+}
+
+enum Severity {
+  LOW
+  MODERATE
+  HIGH
+  CRITICAL
+}
+
+enum IncidentStatus {
+  ACTIVE
+  RESOLVED
+}

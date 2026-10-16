@@ -1,0 +1,7 @@
+dist
+coverage
+node_modules
+pnpm-lock.yaml
+apps/web/dist
+apps/api/dist
+apps/api/prisma/migrations

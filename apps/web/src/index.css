@@ -1,0 +1,202 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --color-canvas: var(--bg);
+  --color-panel: var(--panel);
+  --color-panel-muted: var(--panel-muted);
+  --color-foreground: var(--foreground);
+  --color-subtle: var(--subtle);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-contrast: var(--accent-contrast);
+}
+
+:root {
+  color-scheme: light;
+  --bg: #eef3f8;
+  --panel: #ffffff;
+  --panel-muted: #f6f8fb;
+  --foreground: #0f172a;
+  --subtle: #526277;
+  --line: rgba(15, 23, 42, 0.12);
+  --accent: #0f766e;
+  --accent-soft: rgba(15, 118, 110, 0.12);
+  --accent-contrast: #f8fffe;
+  --shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+}
+
+.dark {
+  color-scheme: dark;
+  --bg: #070b14;
+  --panel: #101826;
+  --panel-muted: #0c1422;
+  --foreground: #e7eef8;
+  --subtle: #93a4bd;
+  --line: rgba(148, 163, 184, 0.16);
+  --accent: #2dd4bf;
+  --accent-soft: rgba(45, 212, 191, 0.14);
+  --accent-contrast: #042f2e;
+  --shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(
+      900px 420px at 0% -10%,
+      color-mix(in srgb, var(--accent) 18%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      700px 360px at 100% 0%,
+      color-mix(in srgb, #38bdf8 14%, transparent),
+      transparent 50%
+    );
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 80;
+  border-radius: 0.5rem;
+  background: var(--accent);
+  color: var(--accent-contrast);
+  padding: 0.5rem 0.75rem;
+}
+
+.skip-link:focus {
+  top: 0.75rem;
+}
+
+.sentinel-marker {
+  background: transparent;
+  border: none;
+}
+
+.sentinel-marker__dot {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--marker);
+  color: white;
+  font-size: 12px;
+  box-shadow:
+    0 0 0 2px rgba(7, 11, 20, 0.85),
+    0 8px 16px rgba(0, 0, 0, 0.35);
+}
+
+.sentinel-marker__dot[data-type='WILDFIRE'] {
+  border-radius: 4px;
+  transform: rotate(45deg);
+}
+
+.sentinel-marker__dot[data-type='WILDFIRE'] span {
+  transform: rotate(-45deg);
+}
+
+.sentinel-marker__dot[data-type='STORM'] {
+  border-radius: 6px 6px 12px 12px;
+}
+
+.sentinel-marker__dot[data-type='FLOOD'] {
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+}
+
+.sentinel-marker__dot[data-type='FLOOD'] span {
+  transform: rotate(45deg);
+}
+
+.sentinel-marker__dot.is-selected {
+  box-shadow:
+    0 0 0 3px white,
+    0 0 0 6px var(--marker);
+}
+
+.sentinel-popup {
+  min-width: 180px;
+  color: #0f172a;
+  font-family: var(--font-sans);
+}
+
+.sentinel-popup strong {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  background: #0b1220;
+  font-family: inherit;
+}
+
+.leaflet-container img {
+  max-width: none !important;
+  max-height: none !important;
+}
+
+.marker-cluster-small,
+.marker-cluster-medium,
+.marker-cluster-large {
+  background-color: rgba(45, 212, 191, 0.28);
+}
+
+.marker-cluster-small div,
+.marker-cluster-medium div,
+.marker-cluster-large div {
+  background-color: #0f766e;
+  color: white;
+  font-family: var(--font-mono);
+}
+
+.live-dot {
+  animation: pulse-dot 2.2s infinite;
+}
+
+.sentinel-flash {
+  animation: flash-row 4s ease-out;
+}
+
+@keyframes pulse-dot {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 70%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 8px transparent;
+  }
+}
+
+@keyframes flash-row {
+  0% {
+    background-color: var(--accent-soft);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .live-dot,
+  .sentinel-flash {
+    animation: none;
+  }
+}

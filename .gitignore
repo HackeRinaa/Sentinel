@@ -1,0 +1,16 @@
+node_modules
+dist
+coverage
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+Thumbs.db
+.vite
+apps/web/dist
+apps/api/dist
+.prisma
+*.tsbuildinfo
+playwright-report
+test-results
